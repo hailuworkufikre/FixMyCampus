@@ -1,9 +1,8 @@
+// PATH: FixmyCampus.Api/Controllers/TicketsController.cs  (replace whole file)
 using System.Security.Claims;
-
 using FixmyCampus.Application.DTOs.Tickets;
 using FixmyCampus.Application.Interfaces;
 using FixmyCampus.Domain.Enums;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,110 +20,63 @@ public class TicketsController : ControllerBase
         _ticketService = ticketService;
     }
 
-    // Get current logged-in user's ID
+    // The user id always comes from the JWT, never from the client.
     private int GetCurrentUserId()
     {
-        var userId = User.FindFirstValue(
-            ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                     ?? User.FindFirstValue("sub");
 
         if (!int.TryParse(userId, out var id))
-        {
-            throw new UnauthorizedAccessException(
-                "Invalid user ID.");
-        }
+            throw new UnauthorizedAccessException("Invalid user ID.");
 
         return id;
     }
 
     // POST: api/tickets
     [HttpPost]
-    public async Task<IActionResult> Create(
-        CreateTicketDto dto)
+    public async Task<IActionResult> Create(CreateTicketDto dto)
     {
-        var userId = GetCurrentUserId();
-
-        var ticket =
-            await _ticketService.CreateAsync(
-                dto,
-                userId);
-
-        return CreatedAtAction(
-            nameof(GetById),
-            new { id = ticket.Id },
-            ticket);
+        var ticket = await _ticketService.CreateAsync(dto, GetCurrentUserId());
+        return CreatedAtAction(nameof(GetById), new { id = ticket.Id }, ticket);
     }
 
-    // GET: api/tickets
-    // GET: api/tickets?building=Library
-    // GET: api/tickets?status=1
-    // GET: api/tickets?building=Library&status=1
+    // GET: api/tickets            -> campus feed (any logged-in user)
+    // GET: api/tickets?building=1&status=0
     [HttpGet]
-    [Authorize(Roles = "Admin,Technician")]
-    public async Task<IActionResult> GetAll(
-        Building? building,
-        TicketStatus? status)
+    public async Task<IActionResult> GetAll(Building? building, TicketStatus? status)
     {
-        var tickets =
-            await _ticketService.GetFilteredAsync(
-                building,
-                status);
-
+        var tickets = await _ticketService.GetFilteredAsync(building, status);
         return Ok(tickets);
-    }
-
-    // GET: api/tickets/5
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetById(int id)
-    {
-        var ticket =
-            await _ticketService.GetByIdAsync(id);
-
-        if (ticket == null)
-        {
-            return NotFound(new
-            {
-                message = "Ticket not found."
-            });
-        }
-
-        return Ok(ticket);
     }
 
     // GET: api/tickets/my
     [HttpGet("my")]
     public async Task<IActionResult> GetMyTickets()
     {
-        var userId = GetCurrentUserId();
-
-        var tickets =
-            await _ticketService.GetMyTicketsAsync(
-                userId);
-
+        var tickets = await _ticketService.GetMyTicketsAsync(GetCurrentUserId());
         return Ok(tickets);
+    }
+
+    // GET: api/tickets/5   -> detail + status history
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var ticket = await _ticketService.GetByIdAsync(id);
+
+        if (ticket == null)
+            return NotFound(new { message = "Ticket not found." });
+
+        return Ok(ticket);
     }
 
     // PUT: api/tickets/5
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(
-        int id,
-        UpdateTicketDto dto)
+    public async Task<IActionResult> Update(int id, UpdateTicketDto dto)
     {
-        var userId = GetCurrentUserId();
-
-        var ticket =
-            await _ticketService.UpdateAsync(
-                id,
-                dto,
-                userId);
+        var ticket = await _ticketService.UpdateAsync(id, dto, GetCurrentUserId());
 
         if (ticket == null)
-        {
-            return NotFound(new
-            {
-                message =
-                    "Ticket not found or you are not the owner."
-            });
-        }
+            return NotFound(new { message = "Ticket not found or you are not the owner." });
 
         return Ok(ticket);
     }
@@ -133,82 +85,53 @@ public class TicketsController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var userId = GetCurrentUserId();
-
-        var deleted =
-            await _ticketService.DeleteAsync(
-                id,
-                userId);
+        var deleted = await _ticketService.DeleteAsync(id, GetCurrentUserId());
 
         if (!deleted)
-        {
-            return NotFound(new
-            {
-                message = "Ticket not found."
-            });
-        }
+            return NotFound(new { message = "Ticket not found." });
 
         return NoContent();
     }
 
-    // PUT: api/tickets/5/assign
+    // PUT: api/tickets/5/assign   body: { "technicianId": 3 }
     [HttpPut("{id:int}/assign")]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Assign(
-        int id,
-        AssignTicketDto dto)
+    public async Task<IActionResult> Assign(int id, AssignTicketDto dto)
     {
         try
         {
-            var ticket =
-                await _ticketService.AssignAsync(
-                    id,
-                    dto);
+            var ticket = await _ticketService.AssignAsync(id, dto, GetCurrentUserId());
 
             if (ticket == null)
-            {
-                return NotFound(new
-                {
-                    message = "Ticket not found."
-                });
-            }
+                return NotFound(new { message = "Ticket not found." });
 
             return Ok(ticket);
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(new
-            {
-                message = ex.Message
-            });
+            return BadRequest(new { message = ex.Message });
         }
     }
 
-    // PUT: api/tickets/5/status
-    [HttpPut("{id:int}/status")]
+    // PATCH: api/tickets/5/status   body: { "status": 2, "comment": "..." }
+    [HttpPatch("{id:int}/status")]
     [Authorize(Roles = "Admin,Technician")]
-    public async Task<IActionResult> UpdateStatus(
-        int id,
-        TicketStatus status,
-        string? comment)
+    public async Task<IActionResult> UpdateStatus(int id, UpdateTicketStatusDto dto)
     {
-        var userId = GetCurrentUserId();
-
-        var ticket =
-            await _ticketService.UpdateStatusAsync(
-                id,
-                status,
-                userId,
-                comment);
-
-        if (ticket == null)
+        try
         {
-            return NotFound(new
-            {
-                message = "Ticket not found."
-            });
-        }
+            var ticket = await _ticketService.UpdateStatusAsync(
+                id, dto.Status, GetCurrentUserId(), dto.Comment);
 
-        return Ok(ticket);
+            if (ticket == null)
+                return NotFound(new { message = "Ticket not found." });
+
+            return Ok(ticket);
+        }
+        catch (InvalidOperationException ex)
+        {
+            // illegal skip / backward move -> 400
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }

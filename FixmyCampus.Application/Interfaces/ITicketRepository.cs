@@ -1,3 +1,4 @@
+// PATH: FixmyCampus.Application/Interfaces/ITicketRepository.cs  (replace whole file)
 using FixmyCampus.Domain.Entities;
 using FixmyCampus.Domain.Enums;
 
@@ -13,12 +14,12 @@ public interface ITicketRepository
 
     Task<IEnumerable<Ticket>> GetByUserIdAsync(int userId);
 
-   Task<IEnumerable<Ticket>> GetFilteredAsync(
-    Building? building,
-    TicketStatus? status);
-    
-    Task<Technician?> GetTechnicianByTechnicianIdAsync(
-        int technicianId);
+    Task<IEnumerable<Ticket>> GetFilteredAsync(
+        Building? building,
+        TicketStatus? status);
+
+    // looks up a technician by their User.Id
+    Task<Technician?> GetTechnicianByIdAsync(int technicianId);
 
     Task UpdateAsync(Ticket ticket);
 

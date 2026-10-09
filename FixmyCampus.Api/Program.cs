@@ -1,3 +1,4 @@
+// PATH: FixmyCampus.Api/Program.cs  (replace whole file - only the seeding block after builder.Build() is new)
 using System.Text;
 
 using FixmyCampus.Application.Interfaces;
@@ -87,6 +88,17 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Apply migrations + seed demo data (admin, reporter, technicians, sample tickets)
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync();
+
+    await DbSeeder.SeedAsync(
+        db,
+        scope.ServiceProvider.GetRequiredService<IPasswordHasher>());
+}
 
 // Development
 if (app.Environment.IsDevelopment())

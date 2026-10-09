@@ -1,7 +1,30 @@
-bin/
-obj/
+# .NET build output
+
+**/bin/
+**/obj/
 .vs/
 *.user
 *.suo
 
-appsettings.Development.json
+# Local configuration containing credentials
+
+**/appsettings.json
+**/appsettings.Development.json
+**/appsettings.Local.json
+
+# Angular generated files
+
+**/node_modules/
+**/.angular/
+**/dist/
+**/coverage/
+
+# Editor settings
+
+.vscode/
+
+# Environment variables
+
+.env
+.env.*
+!.env.example

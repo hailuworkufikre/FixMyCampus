@@ -1,0 +1,97 @@
+<div class="technician-dashboard">
+
+  <!-- Header -->
+  <header class="dashboard-header">
+
+    <div>
+      <h1>FixMyCampus</h1>
+      <p>Technician Dashboard</p>
+    </div>
+
+    <button
+      type="button"
+      (click)="logout()">
+      Logout
+    </button>
+
+  </header>
+
+
+  <!-- Main -->
+  <main class="dashboard-content">
+
+    <!-- Welcome -->
+    <section class="welcome-section">
+
+      <h2>Welcome, Technician 🔧</h2>
+
+      <p>
+        View your assigned campus issues and update
+        their progress.
+      </p>
+
+    </section>
+
+
+    <!-- Statistics -->
+    <section class="statistics">
+
+      <div class="stat-card">
+        <h3>Assigned Tickets</h3>
+        <strong>0</strong>
+      </div>
+
+      <div class="stat-card">
+        <h3>New Tasks</h3>
+        <strong>0</strong>
+      </div>
+
+      <div class="stat-card">
+        <h3>In Progress</h3>
+        <strong>0</strong>
+      </div>
+
+      <div class="stat-card">
+        <h3>Resolved</h3>
+        <strong>0</strong>
+      </div>
+
+    </section>
+
+
+    <!-- Assigned Tickets -->
+    <section class="tickets-section">
+
+      <div class="section-header">
+
+        <div>
+          <h2>My Assigned Tickets</h2>
+
+          <p>
+            Tickets assigned to you by the campus administrator.
+          </p>
+        </div>
+
+      </div>
+
+
+      <!-- Empty state -->
+      <div class="empty-state">
+
+        <div class="empty-icon">
+          🔧
+        </div>
+
+        <h3>No assigned tickets</h3>
+
+        <p>
+          Tickets assigned to you will appear here.
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

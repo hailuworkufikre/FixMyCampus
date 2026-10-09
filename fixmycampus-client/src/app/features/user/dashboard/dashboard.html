@@ -1,0 +1,67 @@
+<div class="dashboard">
+
+  <header class="dashboard-header">
+    <div>
+      <h1>FixMyCampus</h1>
+      <p>Campus Issue Reporting & Maintenance Tracker</p>
+    </div>
+
+    <button type="button" (click)="logout()">
+      Logout
+    </button>
+  </header>
+
+  <main class="dashboard-content">
+
+    <section class="welcome-card">
+      <h2>Welcome 👋</h2>
+      <p>
+        Report campus issues and track the progress of your tickets.
+      </p>
+    </section>
+
+    <section class="dashboard-actions">
+
+      <div class="action-card">
+        <h3>Report an Issue</h3>
+        <p>
+          Report problems with computers, Wi-Fi, projectors,
+          electricity, water, or other campus facilities.
+        </p>
+
+        <button
+  type="button"
+  (click)="createTicket()">
+
+  Create Ticket
+
+</button>
+      </div>
+
+      <div class="action-card">
+        <h3>My Tickets</h3>
+        <p>
+          View the issues you have reported and check their current status.
+        </p>
+
+        <button type="button">
+          View My Tickets
+        </button>
+      </div>
+
+      <div class="action-card">
+        <h3>Campus Feed</h3>
+        <p>
+          See reported campus issues and their current status.
+        </p>
+
+        <button type="button">
+          View Campus Feed
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
