@@ -1,3 +1,4 @@
+<!-- PATH: src/app/features/user/dashboard/dashboard.html  (replace whole file) -->
 <div class="dashboard">
 
   <header class="dashboard-header">
@@ -44,7 +45,7 @@
           View the issues you have reported and check their current status.
         </p>
 
-        <button type="button">
+        <button type="button" (click)="openMyTickets()">
           View My Tickets
         </button>
       </div>
@@ -55,7 +56,7 @@
           See reported campus issues and their current status.
         </p>
 
-        <button type="button">
+        <button type="button" (click)="openFeed()">
           View Campus Feed
         </button>
       </div>

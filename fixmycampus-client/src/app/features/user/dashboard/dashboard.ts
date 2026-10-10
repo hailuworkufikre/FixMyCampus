@@ -1,3 +1,4 @@
+// PATH: src/app/features/user/dashboard/dashboard.ts  (replace whole file)
 
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
@@ -19,6 +20,14 @@ export class Dashboard {
 
   createTicket(): void {
     this.router.navigate(['/tickets/create']);
+  }
+
+  openMyTickets(): void {
+    this.router.navigate(['/tickets/my']);
+  }
+
+  openFeed(): void {
+    this.router.navigate(['/tickets/feed']);
   }
 
   logout(): void {

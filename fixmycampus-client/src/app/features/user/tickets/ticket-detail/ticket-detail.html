@@ -1,0 +1,116 @@
+<!-- PATH: src/app/features/tickets/ticket-detail/ticket-detail.html  (NEW file) -->
+<div class="fm-page">
+
+  <header class="fm-topbar">
+    <div>
+      <h1>FixMyCampus</h1>
+      <p>Ticket Details</p>
+    </div>
+
+    <div class="fm-topbar-actions">
+      <button type="button" (click)="goBack()">Back</button>
+      <button type="button" (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main class="fm-content">
+
+    @if (loading()) {
+      <div class="fm-info">Loading ticket...</div>
+    }
+
+    @if (errorMessage()) {
+      <div class="fm-error">{{ errorMessage() }}</div>
+    }
+
+    @if (ticket(); as t) {
+
+      <section class="fm-card">
+        <div class="fm-row">
+          <h2>#{{ t.id }} - {{ t.title }}</h2>
+          <span class="fm-badge" [class]="'fm-badge s' + t.status">{{ statusName(t.status) }}</span>
+        </div>
+
+        <p class="fm-desc">{{ t.description }}</p>
+
+        <dl class="fm-details">
+          <div><dt>Building</dt><dd>{{ buildingName(t.building) }}</dd></div>
+          <div><dt>Room</dt><dd>{{ t.room }}</dd></div>
+          <div><dt>Category</dt><dd>{{ categoryName(t.category) }}</dd></div>
+          <div><dt>Priority</dt><dd>{{ priorityName(t.priority) }}</dd></div>
+          <div><dt>Reported by</dt><dd>{{ t.createdByName || '-' }}</dd></div>
+          <div><dt>Technician</dt><dd>{{ t.assignedTechnicianName || 'Not assigned yet' }}</dd></div>
+          <div><dt>Created</dt><dd>{{ t.createdAt | date:'medium' }}</dd></div>
+          <div><dt>Resolved</dt><dd>{{ t.resolvedAt ? (t.resolvedAt | date:'medium') : '-' }}</dd></div>
+        </dl>
+      </section>
+
+      <!-- Admin / technician actions -->
+      @if (canAssign() || (canMoveStatus() && nextStatus() !== null)) {
+        <section class="fm-card">
+          <h3>Actions</h3>
+
+          @if (canAssign()) {
+            <div class="fm-actions-row">
+              <div class="fm-field">
+                <label for="tech">Assign technician</label>
+                <select id="tech" name="tech" [(ngModel)]="selectedTechnicianId">
+                  <option [ngValue]="null">-- select technician --</option>
+                  @for (tech of technicians(); track tech.id) {
+                    <option [ngValue]="tech.id">{{ tech.fullName }}</option>
+                  }
+                </select>
+              </div>
+              <button type="button" class="fm-btn" [disabled]="busy()" (click)="assign()">
+                {{ busy() ? 'Assigning...' : 'Assign' }}
+              </button>
+            </div>
+          }
+
+          @if (canMoveStatus() && nextStatus() !== null) {
+            <div class="fm-actions-row">
+              <div class="fm-field">
+                <label for="comment">Comment (optional)</label>
+                <input id="comment" name="comment" type="text" maxlength="1000"
+                       [(ngModel)]="comment" placeholder="e.g. Replaced the cable" />
+              </div>
+              <button type="button" class="fm-btn" [disabled]="busy()" (click)="advance()">
+                {{ busy() ? 'Saving...' : 'Move to ' + nextStatusLabel() }}
+              </button>
+            </div>
+          }
+
+          @if (actionSuccess()) {
+            <div class="fm-success">{{ actionSuccess() }}</div>
+          }
+          @if (actionError()) {
+            <div class="fm-error">{{ actionError() }}</div>
+          }
+        </section>
+      }
+
+      <!-- Status history -->
+      <section class="fm-card">
+        <h3>Status history</h3>
+
+        @if (t.history.length === 0) {
+          <div class="fm-info">No status changes yet.</div>
+        } @else {
+          <ul class="fm-timeline">
+            @for (h of t.history; track h.changedAt) {
+              <li>
+                <strong>{{ statusName(h.oldStatus) }} &rarr; {{ statusName(h.newStatus) }}</strong>
+                <span class="fm-time">{{ h.changedAt | date:'medium' }}</span>
+                <div class="fm-small">
+                  by {{ h.changedByName || 'unknown' }}
+                  @if (h.comment) { - {{ h.comment }} }
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    }
+
+  </main>
+</div>

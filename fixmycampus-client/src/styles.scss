@@ -1,39 +1,73 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
-@use '@angular/material' as mat;
+/* PATH: append this whole block to the END of src/styles.scss */
 
-html {
-  height: 100%;
-  @include mat.theme(
-    (
-      color: (
-        primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
-      ),
-      typography: Roboto,
-      density: 0,
-    )
-  );
+.fm-page { min-height: 100vh; background: #f5f7fa; font-family: Roboto, Arial, sans-serif; }
+
+.fm-topbar {
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+  padding: 18px 32px; background: #1976d2; color: #fff;
+}
+.fm-topbar h1 { margin: 0; font-size: 1.5rem; }
+.fm-topbar p { margin: 4px 0 0; }
+.fm-topbar-actions { display: flex; gap: 10px; }
+.fm-topbar-actions button {
+  padding: 9px 18px; border: none; border-radius: 6px; background: #fff; color: #1976d2;
+  font-weight: 600; cursor: pointer;
 }
 
-body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
-  color-scheme: light;
+.fm-content { max-width: 1150px; margin: 0 auto; padding: 24px 16px 48px; }
 
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
-  margin: 0;
-  height: 100%;
+.fm-card {
+  background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .07);
 }
-/* You can add global styles to this file, and also import other style files */
+.fm-card h2, .fm-card h3 { margin-top: 0; color: #12385f; }
+
+.fm-filters { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; }
+.fm-field { display: flex; flex-direction: column; gap: 6px; min-width: 200px; flex: 1; }
+.fm-field label { font-weight: 600; font-size: .9rem; }
+.fm-field select, .fm-field input {
+  padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem;
+}
+
+.fm-btn, .fm-btn-secondary {
+  padding: 10px 18px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;
+}
+.fm-btn { background: #1976d2; color: #fff; }
+.fm-btn:disabled { opacity: .6; cursor: not-allowed; }
+.fm-btn-secondary { background: #e2e8f0; color: #1e293b; }
+
+.fm-table-wrap { overflow-x: auto; padding: 0; }
+.fm-table { width: 100%; border-collapse: collapse; }
+.fm-table th, .fm-table td { text-align: left; padding: 12px; border-bottom: 1px solid #e5e9f0; vertical-align: top; }
+.fm-table th { background: #f1f5f9; color: #12385f; }
+.fm-link { color: #1976d2; font-weight: 600; text-decoration: none; }
+
+.fm-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: .8rem; font-weight: 700; white-space: nowrap; }
+.fm-badge.s0 { background: #e0e7ff; color: #3730a3; }   /* New */
+.fm-badge.s1 { background: #fef3c7; color: #92400e; }   /* Assigned */
+.fm-badge.s2 { background: #dbeafe; color: #1e40af; }   /* In Progress */
+.fm-badge.s3 { background: #dcfce7; color: #166534; }   /* Resolved */
+
+.fm-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.fm-chip { background: #eaf1ff; color: #204eb5; padding: 6px 12px; border-radius: 999px; }
+
+.fm-info { padding: 16px; text-align: center; color: #64748b; }
+.fm-error { background: #fee2e2; color: #991b1b; padding: 12px 14px; border-radius: 8px; margin: 12px 0; }
+.fm-success { background: #dcfce7; color: #166534; padding: 12px 14px; border-radius: 8px; margin: 12px 0; }
+
+.fm-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.fm-desc { color: #334155; line-height: 1.6; }
+.fm-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 0; }
+.fm-details dt { font-size: .8rem; color: #64748b; }
+.fm-details dd { margin: 2px 0 0; font-weight: 600; }
+
+.fm-actions-row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 8px; }
+
+.fm-timeline { list-style: none; margin: 0; padding: 0 0 0 16px; border-left: 3px solid #bfdbfe; }
+.fm-timeline li { margin: 0 0 16px 12px; }
+.fm-time { margin-left: 10px; color: #64748b; font-size: .85rem; }
+.fm-small { font-size: .9rem; color: #475569; margin-top: 2px; }
+
+@media (max-width: 640px) {
+  .fm-topbar { padding: 14px 16px; }
+}

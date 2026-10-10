@@ -1,3 +1,4 @@
+// PATH: FixmyCampus.Application/DTOs/Tickets/UpdateTicketDto.cs  (replace whole file)
 using FixmyCampus.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,17 +11,20 @@ public class UpdateTicketDto
     public string Title { get; set; } = string.Empty;
 
     [Required]
+    [MaxLength(2000)]
     public string Description { get; set; } = string.Empty;
 
     [Required]
-    [MaxLength(100)]
+    [EnumDataType(typeof(Building))]
     public Building Building { get; set; } = Building.MainLibrary;
 
     [Required]
     [MaxLength(50)]
     public string Room { get; set; } = string.Empty;
 
+    [EnumDataType(typeof(TicketCategory))]
     public TicketCategory Category { get; set; }
 
+    [EnumDataType(typeof(TicketPriority))]
     public TicketPriority Priority { get; set; }
 }

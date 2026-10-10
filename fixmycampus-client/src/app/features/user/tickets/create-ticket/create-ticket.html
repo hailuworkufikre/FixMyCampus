@@ -1,280 +1,105 @@
-
+<!-- PATH: src/app/features/user/tickets/create-ticket/create-ticket.html  (replace whole file) -->
 <div class="create-ticket-page">
 
-  <!-- Header -->
-
   <header class="page-header">
-
-    <div
-      class="brand"
-      (click)="goBack()">
-
+    <div class="brand" (click)="goBack()">
       <h1>FixMyCampus</h1>
-
-      <p>
-        Campus Issue Reporting & Maintenance Tracker
-      </p>
-
+      <p>Campus Issue Reporting & Maintenance Tracker</p>
     </div>
 
-    <button
-      type="button"
-      (click)="goBack()">
-
-      Back to Dashboard
-
-    </button>
-
+    <button type="button" (click)="goBack()">Back to Dashboard</button>
   </header>
 
-
-  <!-- Form -->
-
   <main class="form-container">
-
     <section class="form-card">
 
       <h2>Report a Campus Issue</h2>
-
       <p class="form-description">
-        Please provide information about the issue you
-        want to report.
+        Please provide information about the issue you want to report.
       </p>
 
-
-      <form
-        (ngSubmit)="createTicket()">
-
-
-        <!-- Title -->
+      <form [formGroup]="form" (ngSubmit)="createTicket()" novalidate>
 
         <div class="form-group">
-
-          <label for="title">
-            Issue Title
-          </label>
-
-          <input
-            id="title"
-            type="text"
-            name="title"
-            [(ngModel)]="ticket.title"
-            placeholder="Example: Computer is not working"
-            required
-          />
-
+          <label for="title">Issue Title</label>
+          <input id="title" type="text" formControlName="title"
+                 placeholder="Example: Projector is not working" />
+          @if (showError('title')) {
+            <small class="field-error">
+              @if (form.controls.title.errors?.['required']) { Title is required. }
+              @else if (form.controls.title.errors?.['minlength']) { Title must be at least 3 characters. }
+              @else { Title is too long (max 200 characters). }
+            </small>
+          }
         </div>
 
-
-        <!-- Description -->
-
         <div class="form-group">
-
-          <label for="description">
-            Description
-          </label>
-
-          <textarea
-            id="description"
-            name="description"
-            [(ngModel)]="ticket.description"
-            placeholder="Describe the problem in detail..."
-            rows="5"
-            required>
-          </textarea>
-
+          <label for="description">Description</label>
+          <textarea id="description" rows="5" formControlName="description"
+                    placeholder="Describe the problem in detail..."></textarea>
+          @if (showError('description')) {
+            <small class="field-error">
+              @if (form.controls.description.errors?.['required']) { Description is required. }
+              @else if (form.controls.description.errors?.['minlength']) { Please write at least 10 characters. }
+              @else { Description is too long (max 2000 characters). }
+            </small>
+          }
         </div>
 
-
-        <!-- Building -->
-
         <div class="form-group">
-
-          <label for="building">
-            Building
-          </label>
-
-          <select
-            id="building"
-            name="building"
-            [(ngModel)]="ticket.building">
-
-            <option [ngValue]="0">
-              Main Library
-            </option>
-
-            <option [ngValue]="1">
-              Engineering Building
-            </option>
-
-            <option [ngValue]="2">
-              Science Building
-            </option>
-
-            <option [ngValue]="3">
-              Computer Science Building
-            </option>
-
-            <option [ngValue]="4">
-              Administration Building
-            </option>
-
-            <option [ngValue]="5">
-              Student Center
-            </option>
-
+          <label for="building">Building</label>
+          <select id="building" formControlName="building">
+            @for (b of buildings; track b.value) {
+              <option [ngValue]="b.value">{{ b.label }}</option>
+            }
           </select>
-
         </div>
 
-
-        <!-- Room -->
-
         <div class="form-group">
-
-          <label for="room">
-            Room Number
-          </label>
-
-          <input
-            id="room"
-            type="text"
-            name="room"
-            [(ngModel)]="ticket.room"
-            placeholder="Example: Room 204"
-            required
-          />
-
+          <label for="room">Room</label>
+          <input id="room" type="text" formControlName="room" placeholder="Example: Room 204" />
+          @if (showError('room')) {
+            <small class="field-error">
+              @if (form.controls.room.errors?.['required']) { Room is required. }
+              @else { Room is too long (max 50 characters). }
+            </small>
+          }
         </div>
 
-
-        <!-- Category -->
-
         <div class="form-group">
-
-          <label for="category">
-            Category
-          </label>
-
-          <select
-            id="category"
-            name="category"
-            [(ngModel)]="ticket.category">
-
-            <option [ngValue]="0">
-              Computer / IT
-            </option>
-
-            <option [ngValue]="1">
-              Network / Wi-Fi
-            </option>
-
-            <option [ngValue]="2">
-              Projector
-            </option>
-
-            <option [ngValue]="3">
-              Electrical
-            </option>
-
-            <option [ngValue]="4">
-              Plumbing / Water
-            </option>
-
-            <option [ngValue]="5">
-              Other
-            </option>
-
+          <label for="category">Category</label>
+          <select id="category" formControlName="category">
+            @for (c of categories; track c.value) {
+              <option [ngValue]="c.value">{{ c.label }}</option>
+            }
           </select>
-
         </div>
-
-
-        <!-- Priority -->
 
         <div class="form-group">
-
-          <label for="priority">
-            Priority
-          </label>
-
-          <select
-            id="priority"
-            name="priority"
-            [(ngModel)]="ticket.priority">
-
-            <option [ngValue]="0">
-              Low
-            </option>
-
-            <option [ngValue]="1">
-              Medium
-            </option>
-
-            <option [ngValue]="2">
-              High
-            </option>
-
+          <label for="priority">Priority</label>
+          <select id="priority" formControlName="priority">
+            @for (p of priorities; track p.value) {
+              <option [ngValue]="p.value">{{ p.label }}</option>
+            }
           </select>
-
         </div>
 
-
-        <!-- Messages -->
-
-        @if (successMessage) {
-
-          <div class="success-message">
-            {{ successMessage }}
-          </div>
-
+        @if (successMessage()) {
+          <div class="success-message">{{ successMessage() }}</div>
         }
-
-
-        @if (errorMessage) {
-
-          <div class="error-message">
-            {{ errorMessage }}
-          </div>
-
+        @if (errorMessage()) {
+          <div class="error-message">{{ errorMessage() }}</div>
         }
-
-
-        <!-- Buttons -->
 
         <div class="form-actions">
+          <button type="button" class="cancel-button" (click)="goBack()">Cancel</button>
 
-          <button
-            type="button"
-            class="cancel-button"
-            (click)="goBack()">
-
-            Cancel
-
+          <button type="submit" class="submit-button" [disabled]="isLoading()">
+            @if (isLoading()) { Submitting... } @else { Submit Ticket }
           </button>
-
-
-          <button
-            type="submit"
-            class="submit-button"
-            [disabled]="isLoading">
-
-            @if (isLoading) {
-              Submitting...
-            } @else {
-              Submit Ticket
-            }
-
-          </button>
-
         </div>
 
-
       </form>
-
     </section>
-
   </main>
-
 </div>
-

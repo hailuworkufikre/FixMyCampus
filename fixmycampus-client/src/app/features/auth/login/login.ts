@@ -1,3 +1,4 @@
+// PATH: src/app/features/auth/login/login.ts  (replace whole file)
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -45,7 +46,7 @@ export class Login {
 
           if (response.role === UserRole.Admin) {
 
-            this.router.navigate(['/admin']);
+            this.router.navigate(['/admin/tickets']);
 
           } else if (response.role === UserRole.Technician) {
 

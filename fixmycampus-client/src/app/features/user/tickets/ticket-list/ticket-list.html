@@ -1,0 +1,123 @@
+<!-- PATH: src/app/features/tickets/ticket-list/ticket-list.html  (NEW file) -->
+<div class="fm-page">
+
+  <header class="fm-topbar">
+    <div>
+      <h1>FixMyCampus</h1>
+      <p>{{ title }}</p>
+    </div>
+
+    <div class="fm-topbar-actions">
+      @if (mode === 'admin') {
+        <button type="button" (click)="goTechnicians()">Manage Technicians</button>
+      } @else {
+        <button type="button" (click)="goHome()">Dashboard</button>
+      }
+      <button type="button" (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main class="fm-content">
+
+    <!-- Admin extra: open tickets per building -->
+    @if (mode === 'admin' && buildingCounts().length > 0) {
+      <section class="fm-card">
+        <h3>Open tickets by building</h3>
+        <div class="fm-chips">
+          @for (b of buildingCounts(); track b.label) {
+            <span class="fm-chip">{{ b.label }}: <strong>{{ b.count }}</strong></span>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Filters -->
+    <section class="fm-card fm-filters">
+
+      <div class="fm-field">
+        <label for="building">Building</label>
+        <select id="building" name="building"
+                [(ngModel)]="buildingFilter" (ngModelChange)="load()">
+          <option [ngValue]="null">All buildings</option>
+          @for (b of buildings; track b.value) {
+            <option [ngValue]="b.value">{{ b.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="fm-field">
+        <label for="status">Status</label>
+        <select id="status" name="status"
+                [(ngModel)]="statusFilter" (ngModelChange)="load()">
+          <option [ngValue]="null">All statuses</option>
+          @if (mode === 'admin') {
+            <option [ngValue]="OPEN">Open (not resolved)</option>
+          }
+          @for (s of statuses; track s.value) {
+            <option [ngValue]="s.value">{{ s.label }}</option>
+          }
+        </select>
+      </div>
+
+      <button type="button" class="fm-btn-secondary" (click)="clearFilters()">
+        Clear filters
+      </button>
+
+      @if (mode !== 'admin') {
+        <button type="button" class="fm-btn" (click)="createTicket()">
+          + Report an issue
+        </button>
+      }
+    </section>
+
+    <!-- States -->
+    @if (loading()) {
+      <div class="fm-info">Loading tickets...</div>
+    }
+
+    @if (errorMessage()) {
+      <div class="fm-error">{{ errorMessage() }}</div>
+    }
+
+    @if (!loading() && !errorMessage() && tickets().length === 0) {
+      <div class="fm-info">No tickets found.</div>
+    }
+
+    <!-- Table -->
+    @if (!loading() && tickets().length > 0) {
+      <section class="fm-card fm-table-wrap">
+        <table class="fm-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Location</th>
+              <th>Category</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Technician</th>
+              <th>Created</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (t of tickets(); track t.id) {
+              <tr>
+                <td>{{ t.id }}</td>
+                <td>{{ t.title }}</td>
+                <td>{{ buildingName(t.building) }}<br><small>{{ t.room }}</small></td>
+                <td>{{ categoryName(t.category) }}</td>
+                <td>{{ priorityName(t.priority) }}</td>
+                <td><span class="fm-badge" [class]="'fm-badge s' + t.status">{{ statusName(t.status) }}</span></td>
+                <td>{{ t.assignedTechnicianName || '-' }}</td>
+                <td>{{ t.createdAt | date:'medium' }}</td>
+                <td><a class="fm-link" [routerLink]="['/tickets', t.id]">View</a></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
+    }
+
+  </main>
+</div>

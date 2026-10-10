@@ -1,7 +1,9 @@
+// PATH: src/app/core/services/auth.service.ts  (replace whole file)
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
 import {
   LoginRequest,
   RegisterRequest,
@@ -13,7 +15,7 @@ import {
 })
 export class AuthService {
 
-  private readonly apiUrl = 'http://localhost:5176/api/Auth';
+  private readonly apiUrl = `${environment.apiUrl}/auth`;
 
   constructor(private http: HttpClient) {}
 

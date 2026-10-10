@@ -1,5 +1,7 @@
+// PATH: src/app/models/ticket.models.ts  (replace whole file)
 import {
   Building,
+  TicketCategory,
   TicketPriority,
   TicketStatus
 } from './enums';
@@ -9,12 +11,25 @@ export interface CreateTicketRequest {
   description: string;
   building: Building;
   room: string;
-  category: number;
+  category: TicketCategory;
   priority: TicketPriority;
 }
 
 export interface AssignTicketRequest {
   technicianId: number;
+}
+
+export interface UpdateStatusRequest {
+  status: TicketStatus;
+  comment?: string;
+}
+
+export interface TicketHistory {
+  oldStatus: TicketStatus;
+  newStatus: TicketStatus;
+  changedAt: string;
+  changedByName?: string;
+  comment?: string;
 }
 
 export interface Ticket {
@@ -23,7 +38,7 @@ export interface Ticket {
   description: string;
   building: Building;
   room: string;
-  category: number;
+  category: TicketCategory;
   priority: TicketPriority;
   status: TicketStatus;
 
@@ -36,4 +51,13 @@ export interface Ticket {
 
   assignedTechnicianId?: number;
   assignedTechnicianName?: string;
+
+  history: TicketHistory[];
+}
+
+export interface TechnicianItem {
+  id: number;
+  fullName: string;
+  specialization: number;
+  isAvailable: boolean;
 }

@@ -1,262 +1,266 @@
+<!-- PATH: src/app/features/admin/dashboard/dashboard.html  (replace whole file) -->
 <div class="admin-dashboard">
 
   <!-- Header -->
   <header class="dashboard-header">
+
     <div>
       <h1>FixMyCampus</h1>
       <p>Admin Dashboard</p>
     </div>
 
-    <button type="button" (click)="logout()">
-      Logout
-    </button>
+    <div>
+      <button type="button" (click)="goTickets()">Tickets</button>
+      <button type="button" (click)="logout()">Logout</button>
+    </div>
+
   </header>
 
+
+  <!-- Main Content -->
   <main class="dashboard-content">
 
-    <!-- Welcome -->
     <section class="welcome-section">
+
       <h2>Welcome, Admin 👋</h2>
+
       <p>
         Manage campus issues, assign technicians,
         and track ticket progress.
       </p>
+
     </section>
 
-    <!-- Register Technician -->
-    <section class="technician-section">
-      <div class="section-header">
-        <div>
-          <h2>Register Technician</h2>
-          <p>Create a new technician account.</p>
-        </div>
+    <!-- Create Technician -->
+
+<section class="technician-section">
+
+  <div class="section-header">
+
+    <div>
+      <h2>Register Technician</h2>
+
+      <p>
+        Create a new technician account.
+      </p>
+    </div>
+
+  </div>
+
+
+  <form
+    class="technician-form"
+    (ngSubmit)="createTechnician()">
+
+    <div class="form-group">
+
+      <label for="fullName">
+        Full Name
+      </label>
+
+      <input
+        id="fullName"
+        type="text"
+        name="fullName"
+        [(ngModel)]="technician.fullName"
+        placeholder="Enter technician full name"
+        required
+      />
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="email">
+        Email
+      </label>
+
+      <input
+        id="email"
+        type="email"
+        name="email"
+        [(ngModel)]="technician.email"
+        placeholder="Enter technician email"
+        required
+      />
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="password">
+        Password
+      </label>
+
+      <input
+        id="password"
+        type="password"
+        name="password"
+        [(ngModel)]="technician.password"
+        placeholder="Enter temporary password"
+        required
+      />
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="phoneNumber">
+        Phone Number
+      </label>
+
+      <input
+        id="phoneNumber"
+        type="text"
+        name="phoneNumber"
+        [(ngModel)]="technician.phoneNumber"
+        placeholder="Enter phone number"
+      />
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="specialization">
+        Specialization
+      </label>
+
+      <select
+        id="specialization"
+        name="specialization"
+        [(ngModel)]="technician.specialization">
+
+        <option [ngValue]="0">
+          Computer / IT
+        </option>
+
+        <option [ngValue]="1">
+          Network
+        </option>
+
+        <option [ngValue]="2">
+          Electrical
+        </option>
+
+        <option [ngValue]="3">
+          Plumbing
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="form-group checkbox-group">
+
+      <input
+        id="isAvailable"
+        type="checkbox"
+        name="isAvailable"
+        [(ngModel)]="technician.isAvailable"
+      />
+
+      <label for="isAvailable">
+        Technician is available
+      </label>
+
+    </div>
+
+
+    @if (message) {
+
+      <div class="success-message">
+        {{ message }}
       </div>
 
-      <form
-        class="technician-form"
-        (ngSubmit)="createTechnician()">
+    }
 
-        <div class="form-group">
-          <label for="fullName">Full Name</label>
-          <input
-            id="fullName"
-            type="text"
-            name="fullName"
-            [(ngModel)]="technician.fullName"
-            placeholder="Enter technician full name"
-            required
-          />
-        </div>
 
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            name="email"
-            [(ngModel)]="technician.email"
-            placeholder="Enter technician email"
-            required
-          />
-        </div>
+    @if (errorMessage) {
 
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            [(ngModel)]="technician.password"
-            placeholder="Enter temporary password"
-            required
-          />
-        </div>
+      <div class="error-message">
+        {{ errorMessage }}
+      </div>
 
-        <div class="form-group">
-          <label for="phoneNumber">Phone Number</label>
-          <input
-            id="phoneNumber"
-            type="text"
-            name="phoneNumber"
-            [(ngModel)]="technician.phoneNumber"
-            placeholder="Enter phone number"
-          />
-        </div>
+    }
 
-        <div class="form-group">
-          <label for="specialization">Specialization</label>
-          <select
-            id="specialization"
-            name="specialization"
-            [(ngModel)]="technician.specialization">
 
-            <option [ngValue]="0">Computer / IT</option>
-            <option [ngValue]="1">Network</option>
-            <option [ngValue]="2">Electrical</option>
-            <option [ngValue]="3">Plumbing</option>
-          </select>
-        </div>
+    <button
+      type="submit"
+      [disabled]="isLoading">
 
-        <div class="form-group checkbox-group">
-          <input
-            id="isAvailable"
-            type="checkbox"
-            name="isAvailable"
-            [(ngModel)]="technician.isAvailable"
-          />
-          <label for="isAvailable">
-            Technician is available
-          </label>
-        </div>
+      @if (isLoading) {
+        Creating...
+      } @else {
+        Create Technician
+      }
 
-        @if (message) {
-          <div class="success-message">
-            {{ message }}
-          </div>
-        }
+    </button>
 
-        @if (errorMessage) {
-          <div class="error-message">
-            {{ errorMessage }}
-          </div>
-        }
+  </form>
 
-        <button type="submit" [disabled]="isLoading">
-          @if (isLoading) {
-            Creating...
-          } @else {
-            Create Technician
-          }
-        </button>
-      </form>
-    </section>
+</section>
+
 
     <!-- Statistics -->
     <section class="statistics">
 
       <div class="stat-card">
         <h3>Total Tickets</h3>
-        <strong>{{ totalTickets }}</strong>
+        <strong>0</strong>
       </div>
 
       <div class="stat-card">
         <h3>New</h3>
-        <strong>{{ newTickets }}</strong>
+        <strong>0</strong>
       </div>
 
       <div class="stat-card">
         <h3>In Progress</h3>
-        <strong>{{ inProgressTickets }}</strong>
+        <strong>0</strong>
       </div>
 
       <div class="stat-card">
         <h3>Resolved</h3>
-        <strong>{{ resolvedTickets }}</strong>
+        <strong>0</strong>
       </div>
 
     </section>
 
-    <!-- Campus Tickets -->
+
+    <!-- Ticket Management -->
     <section class="tickets-section">
 
       <div class="section-header">
+
         <div>
           <h2>Campus Tickets</h2>
           <p>Manage and monitor reported issues.</p>
         </div>
 
-        <button
-          type="button"
-          (click)="loadTickets()"
-          [disabled]="isLoadingTickets">
-
-          @if (isLoadingTickets) {
-            Loading...
-          } @else {
-            Refresh Tickets
-          }
+        <button type="button">
+          View All Tickets
         </button>
+
       </div>
 
-      @if (ticketErrorMessage) {
-        <div class="error-message">
-          {{ ticketErrorMessage }}
-        </div>
-      }
 
-      @if (isLoadingTickets) {
-        <div class="empty-state">
-          <p>Loading campus tickets...</p>
-        </div>
-      } @else if (tickets.length === 0 && !ticketErrorMessage) {
-        <div class="empty-state">
-          <h3>No tickets yet</h3>
-          <p>Reported campus issues will appear here.</p>
-        </div>
-      } @else if (tickets.length > 0) {
+      <div class="empty-state">
 
-        <div class="ticket-list">
+        <h3>No tickets yet</h3>
 
-          @for (ticket of tickets; track ticket.id) {
-            <article class="ticket-card">
+        <p>
+          Reported campus issues will appear here.
+        </p>
 
-              <div class="ticket-card-header">
-                <h3>{{ ticket.title }}</h3>
-
-                <span class="ticket-status">
-                  {{ getStatusName(ticket.status) }}
-                </span>
-              </div>
-
-              <p>{{ ticket.description }}</p>
-
-              <div class="ticket-details">
-                <span>
-                  <strong>Building:</strong>
-                  {{ ticket.building }}
-                </span>
-
-                <span>
-                  <strong>Room:</strong>
-                  {{ ticket.room }}
-                </span>
-
-                <span>
-                  <strong>Category:</strong>
-                  {{ ticket.category }}
-                </span>
-
-                <span>
-                  <strong>Priority:</strong>
-                  {{ ticket.priority }}
-                </span>
-              </div>
-
-              <div class="ticket-meta">
-                <span>
-                  <strong>Reported by:</strong>
-                  {{ ticket.createdByName || 'Unknown' }}
-                </span>
-
-                <span>
-                  <strong>Assigned technician:</strong>
-                  {{ ticket.assignedTechnicianName || 'Not assigned' }}
-                </span>
-
-                <span>
-                  <strong>Created:</strong>
-                  {{ ticket.createdAt | date:'medium' }}
-                </span>
-              </div>
-
-            </article>
-          }
-
-        </div>
-      }
+      </div>
 
     </section>
 
   </main>
-</div>
 
+</div>
